@@ -1,7 +1,6 @@
 # deaify — Project Rules
 
 > Generated from skills/. Edit the skills, then re-run gen_adapters.py.
-
 # code-no-slop
 
 # code-no-slop — Lazy Senior Dev Mode
@@ -138,7 +137,6 @@ If all five hold, ship. If any fails, fix that rung before delivering.
 This guard governs what gets built, not how prose is written (pair with the `humanizer` skill for text, and with `code-humanizer` for de-AI-fying existing generated code). "normal mode" / "stop code-no-slop" reverts to default behavior. Intensity persists until changed or the session ends.
 
 The shortest path to done is the right path.
-
 
 ---
 
@@ -372,7 +370,6 @@ Sterile, uniform code is as obvious as slop. Good human code:
 
 Pair this skill with `code-no-slop` so future code is written lean in the first place, and with `humanizer` for any prose, comments, or commit messages that still smell of AI.
 
-
 ---
 
 # humanize-prose
@@ -401,7 +398,7 @@ Do NOT use for code, comments, or commit messages — those are `code-humanizer`
 `code-no-slop`. Do not use to launder factual inaccuracies: humanizing is about
 voice, not truth.
 
-## The 20 AI Tells (scan for these)
+## The 24 core AI Tells (scan for these)
 
 A single tell is noise; *clusters* are a confession.
 
@@ -422,7 +419,7 @@ A single tell is noise; *clusters* are a confession.
 8. **Conclusion that restates the intro** — "In conclusion, as we have seen…". End on a
    forward point or a genuine take, not a recap.
 9. **No first person, no opinion** — text that could have been written by no one. Pick
-   a stance and own it.
+   a stance and own it (but see *Voice by context* — not every text wants a stance).
 10. **Vague nouns** — "solution", "approach", "landscape", "ecosystem", "journey".
     Name the specific thing.
 11. **Robotic enumeration** — "First, … Second, … Third, …" when prose order would do.
@@ -444,11 +441,6 @@ A single tell is noise; *clusters* are a confession.
     surprising. Let one sentence be sharp.
 20. **Explaining the obvious** — "we can see that", "as shown above", "it is clear
     that". Trust the reader.
-
-### Technical & algorithm writing (extra tells)
-
-Docs, tutorials, and algorithm explanations have their own tells:
-
 21. **Narration of the trivial** — "we can see that the loop runs n times", "this
     function calculates the sum". State the non-obvious, skip the rest.
 22. **Hiding the tradeoff** — describing an algorithm without its cost, failure mode,
@@ -458,12 +450,104 @@ Docs, tutorials, and algorithm explanations have their own tells:
 24. **No worked example / no code** — explaining an algorithm only in prose when a
     ten-line snippet would settle it. Show the work.
 
+## Additional tells (Wikipedia / blader parity)
+
+These come from Wikipedia's *Signs of AI writing* and close the gap with the
+33-pattern humanizers. Most overlap with the core 24 but name the specific shape.
+
+25. **Copula avoidance** — "serves as", "features", "boasts", "acts as" where "is" /
+    "has" is plainer. "It serves as a cache" → "It's a cache."
+26. **Negative parallelisms / tailing negations** — "It's not just X, it's Y",
+    "…, no guessing." State the point directly.
+27. **Synonym cycling** — repeating the same idea as "protagonist / main character /
+    central figure / hero." Use the clearest word and repeat it.
+28. **Rule of three padding** — "innovation, inspiration, and insights." Use the
+    natural number of items.
+29. **Boldface / emoji / curly-quote dressing** — `**OKRs**`, "🚀 Launch", `“quotes”`.
+    Drop the decoration; plain text reads as more human.
+30. **Chatbot artifacts** — "I hope this helps! Let me know if…", "Great question!
+    You're absolutely right!" Respond directly; remove the filler.
+31. **Signposting announcements** — "Let's dive in", "Here's what you need to know."
+    Start with the content.
+32. **Manufactured punchlines / aphorism formulas** — "Symmetry is the language of
+    trust", staccato "No prior. No nostalgia." Use varied rhythm and a concrete claim.
+33. **Conversational rhetorical openers** — "Honestly? It depends…" Fake-candid setups.
+    Remove the setup.
+34. **Significance inflation / promotional language** — "a pivotal moment",
+    "breathtaking region", "plays a crucial role." State the plain fact; name a real
+    source or cut the claim.
+
+## Chinese AI-isms (中文 AI 腔)
+
+Chinese output has its own tells. Cut these:
+
+- **值得一提 / 值得注意的是 / 值得一提的是** — fold the point into the sentence; don't
+  announce it.
+- **从某种意义上说 / 在某种程度上** — drop the hedge; say the qualified thing plainly.
+- **综上所述 / 总而言之 / 总的来说** — end on a real take, not a recap.
+- **不容忽视 / 至关重要 / 发挥着至关重要的作用 / 具有深远意义** — cut the boosterism;
+  state the fact.
+- **在当今…时代 / 在…的当下 / 随着…的发展** — drop the filler opener; start with the
+  substance.
+- **不言而喻 / 毫无疑问 / 毋庸置疑** — just say it; don't vouch for the obvious.
+- **为…奠定了坚实基础 / 开启了…新篇章 / 注入了新的活力** — promotional; say what
+  actually happened.
+
+Before: "值得注意的是，随着人工智能的发展，这一技术发挥着至关重要的作用，不容忽视。"
+After: "This technique matters, and the hype around it doesn't."
+
+## Self-critique loop (the "obviously AI" audit)
+
+One draft is never enough. After writing or rewriting, do a **second pass** and ask,
+out loud: *"What here would only an LLM write?"* Then kill what you find.
+
+Checklist:
+1. Could any sentence have been emitted by any model with no knowledge of the topic?
+   If yes, cut or rewrite it with something specific.
+2. Any leftover tell from the lists above — em-dash between clauses, "delve",
+   "It is worth noting", a forced three-item list, a hedge opener, a Chinese AI-ism?
+3. Did I add anything not in the source? (See fact-preservation below.) If yes, remove
+   it — that's not humanizing, that's inventing.
+4. Is the voice right for the context? (See voice-by-context.) A neutral doc that I
+   "gave an opinion" to is now *wrong*, not human.
+
+Then rewrite once more to fix what the audit caught. The first pass removes the loud
+tells; the audit pass removes the ones that survive a careful read.
+
+## Fact-preservation rule (no-fabrication)
+
+Humanizing changes *voice*, never *truth*.
+
+- Never invent facts, names, dates, statistics, or citations that are not in the
+  source text.
+- Specificity (a real number, a real name) must come from the source or the author.
+  If it's missing, **ask** — don't guess to make the prose "concrete."
+- Do not "correct" facts or add confidence the source lacks. The Wikipedia patterns
+  are about wording, not accuracy.
+- If a rewrite needs a detail to land (e.g. a date in an example), mark it as a
+  placeholder for the author, like the blader skill does — never fill it from memory.
+
+## Voice by context
+
+Not every text wants a personality. Apply the stance/opinion tells (#9) only where
+voice is wanted:
+
+- **Voice wanted** — blog, opinion, personal, marketing copy, anything addressed to a
+  reader as a person. Take a stance, use first person, vary rhythm.
+- **Voice not wanted** — technical docs, reference material, neutral reporting,
+  academic prose. Stay neutral; *dropping* personality here is correct. Do NOT force a
+  hot take into a doc that should be flat — a neutral sentence is the right call, and
+  tell #9 does not apply.
+
+This resolves the tension: the goal is *human*, which for a reference doc means
+*clean and neutral*, not *opinionated*.
+
 ## Prevention — write human from scratch
 
 - **Write to one specific person.** Picture the teammate who asked. Sound like you
   talking to them, not like a manual.
-- **State an opinion.** Humans have one. "I'd use X here because Y" beats "X and Y are
-  both valid approaches."
+- **State an opinion** (where voice is wanted). "I'd use X here because Y" beats
+  "X and Y are both valid approaches."
 - **Use specifics.** Names, numbers, the actual thing. Kill "solution"/"approach".
 - **Vary sentence length on purpose.** Short sentences are fine. A wall of same-length
   sentences is a tell.
@@ -474,10 +558,14 @@ Docs, tutorials, and algorithm explanations have their own tells:
 ## Remediation — rewrite existing text
 
 1. Read the text. Preserve its meaning and facts exactly; change only the voice.
-2. Mark every tell instance (cite the number from the list above).
+2. Mark every tell instance (cite the number from the lists above).
 3. Rewrite: specifics over vague nouns, active over passive, an opinion over a hedge,
-   periods over em-dashes, two points over a forced three.
-4. **Verify by reading aloud.** If it sounds like a LinkedIn post or a brochure, it
+   periods over em-dashes, two points over a forced three. Apply the Chinese-isms and
+   additional tells where present.
+4. **Fact-check:** confirm you added nothing not in the source (no-fabrication rule).
+5. **Self-critique pass:** re-read and ask "what here would only an LLM write?", then
+   rewrite once more to kill leftovers.
+6. **Verify by reading aloud.** If it sounds like a LinkedIn post or a brochure, it
    still smells — rewrite. The test is ears, not rules.
 
 ## Output Format
@@ -486,8 +574,9 @@ For remediation, provide:
 1. The rewritten text.
 2. A short "changes" list mapping edits to tell numbers
    (e.g. "- #3 replaced 'delve' → 'look'; - #1 cut 'It's worth noting'; - #18 added
-   the actual benchmark number").
-3. If read-aloud check was done, a one-line note: "read aloud: no brochure tone left."
+   the actual benchmark number; - #30 removed the 'Hope this helps!' closer").
+3. A one-line note: "fact-check: no invented details" and, if read-aloud was done,
+   "read aloud: no brochure tone left."
 
 ## Before / After Examples
 
@@ -522,6 +611,18 @@ After (humanized):
 Changes: #21 cut "we can see that"; #22 named the cost (O(log n)) and the failure
 mode (don't sort just to search); #24 gave the worked example; #10 replaced
 "approach"/"scenarios" with specifics.
+
+### Tell #30 + Chinese AI-isms (chatbot closer + 中文腔)
+
+Before (AI-sounding):
+> I hope this helps! Let me know if you have any questions. 值得注意的是，随着人工智能的发展，这一方法发挥着至关重要的作用，不容忽视。
+
+After (humanized):
+> This method works; tell me if it breaks on your data. It matters, but the hype
+> around it doesn't.
+
+Changes: #30 removed the "Hope this helps!" closer; Chinese-isms cut "值得注意的是",
+"随着…的发展", "发挥着至关重要的作用", "不容忽视".
 
 ## Pairing
 
