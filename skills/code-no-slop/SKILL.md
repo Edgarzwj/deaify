@@ -3,7 +3,7 @@ name: code-no-slop
 description: "Anti-over-engineering coding guard. Use when writing, adding, refactoring, fixing, reviewing, or designing code, or choosing libraries or dependencies. Forces the laziest solution that actually works: questions whether the code needs to exist (YAGNI), reuses existing code, prefers the standard library and native platform features over new dependencies, and ships the shortest working diff. Also applies Karpathy's four rules — think before coding, simplicity first, surgical changes, goal-driven execution — plus the LLM-smells research taxonomy (no hallucinated packages, no fake modularity, no fake complexity)."
 description_zh: "反过度工程代码守卫：写最少的代码"
 description_en: "Anti-over-engineering code guard"
-version: 1.2.0
+version: 1.3.0
 agent_created: true
 license: MIT
 upstream: "Ponytail (DietrichGebert/ponytail) + andrej-karpathy-skills (forrestchang/andrej-karpathy-skills) + Saxena LLM-smells taxonomy"
@@ -120,6 +120,18 @@ Never simplify away: input validation at trust boundaries, error handling that p
 Never be lazy about understanding the problem. The ladder shortens the solution, never the reading. Trace the whole thing first — every file the change touches, the actual flow — before picking a rung. Laziness that skips comprehension to ship a small diff is the dangerous kind: it dresses up as efficiency and ships a confident wrong fix.
 
 Lazy code without its check is unfinished. Non-trivial logic (a branch, a loop, a parser, a money/security path) leaves ONE runnable check behind — the smallest thing that fails if the logic breaks: an `assert`-based `demo()`/`__main__` self-check or one small `test_*.py`. No frameworks, no fixtures, no per-function suites unless asked. Trivial one-liners need no test; YAGNI applies to tests too.
+
+## Pre-delivery self-audit (before you say done)
+
+Run this gate so "lazy" does not become "careless":
+
+1. **Read the diff.** Every changed line traces to the request? No "improvements" to unbroken neighbors? No style cleanup smuggled in?
+2. **Ladder check.** For each added piece: did it need to exist, or was there a stdlib/native/installed option? If you wrote 30 lines where `@lru_cache` or `**` sufficed, you skipped a rung.
+3. **Algorithm check (if applicable).** No hand-rolled `pow`/`gcd`/`bisect`/`heapq`? Magic constants named and digit-separated? No narration comments? No single-method class around one algorithm? No blanket `deepcopy`?
+4. **No invented dependencies.** Every import/API you used actually exists in the target environment. If you guessed a package name, you have not verified.
+5. **Lean check.** Could the explanation be three lines shorter? Could the code? If the explanation is longer than the code, delete it.
+
+If all five hold, ship. If any fails, fix that rung before delivering.
 
 ## Boundaries
 
