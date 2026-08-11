@@ -3,7 +3,7 @@ name: code-humanizer
 description: "Rewrite AI-flavored code to read like it was written by a competent human, including algorithm and systems code. Use when given existing code that looks machine-generated — over-commented, generically named, over-defensive, over-abstracted, or uniformly structured — and asked to 'humanize', 'de-AI', 'make this less AI-generated', or 'remove the AI smell' from code. Detects 22 AI code smells (15 core + 7 algorithm/systems extended) and rewrites them with verified before/after examples across JS/TS and Python."
 description_zh: "去除代码的 AI 味：把 AI 生成的代码改得像人写的（含算法/系统代码）"
 description_en: "Remove AI smell from code"
-version: 1.2.0
+version: 1.3.0
 agent_created: true
 allowed-tools:
   - Read
@@ -221,6 +221,17 @@ def sum_mod(values):
 Changes: reinvented `pow` (stdlib) → `**`; reinvented `unique` → `dict.fromkeys` (order-preserving, same behavior); `SortUtility` class (#10) inlined; `MOD` magic number (#12) named with digit separators; `solve`'s broad `except` + generic print (#4) removed — the normal path returns `sum(values) % MOD`, identical to before; generic `arr`/`data`/`ans`/`i` (#2) → `items`/`values`.
 
 **Verified:** this rewrite was executed and asserted against the original on sample inputs — `power(2, 10) == 1024`, `unique([3, 1, 3, 2, 2]) == [3, 1, 2]`, `sum_mod([10**9, 10**9]) == 999999993` — outputs match, confirming the skill's "preserve behavior" rule holds.
+
+**Cross-language:** the same tells appear in Go, Rust, C++, and beyond. A Go before/after for #16–#22 lives in `examples/algorithm.go` — `go run algorithm.go` prints both versions agreeing on the sample input. The smells are language-agnostic; only the idioms differ (`map[int]struct{}` over a hand-rolled dedup loop, named `const mod = 1_000_000_007`, no narration comments).
+
+## Smell-density self-check (before you deliver)
+
+Do not ship because it "looks better". Run this gate:
+
+1. Count distinct smell numbers you fixed. **One fix on a 200-line file is suspicious** — either the code was already clean (say so, don't invent work) or you missed a cluster. Go back and scan #1–#22 again.
+2. Confirm behavior preservation: original and rewrite produce identical output on the inputs you care about, **including edge cases** (empty, max/overflow, modulo wrap). If you did not run or trace it, you have not verified.
+3. Read the result top-to-bottom once. Does any function still read like a template? Any comment that restates the next line? Any `tmp`/`data`/`result` with a real name hiding? If yes, fix before delivering.
+4. If nothing substantive changed, say "this is already clean" — the honest answer is sometimes zero edits.
 
 ## Add Soul, Not Just Remove Smells
 
