@@ -3,7 +3,7 @@ name: code-no-slop
 description: "Anti-over-engineering coding guard. Use when writing, adding, refactoring, fixing, reviewing, or designing code, or choosing libraries or dependencies. Forces the laziest solution that actually works: questions whether the code needs to exist (YAGNI), reuses existing code, prefers the standard library and native platform features over new dependencies, and ships the shortest working diff. Also applies Karpathy's four rules — think before coding, simplicity first, surgical changes, goal-driven execution — plus the LLM-smells research taxonomy (no hallucinated packages, no fake modularity, no fake complexity)."
 description_zh: "反过度工程代码守卫：写最少的代码"
 description_en: "Anti-over-engineering code guard"
-version: 1.3.0
+version: 1.4.0
 agent_created: true
 license: MIT
 upstream: "Ponytail (DietrichGebert/ponytail) + andrej-karpathy-skills (forrestchang/andrej-karpathy-skills) + Saxena LLM-smells taxonomy"
@@ -32,7 +32,7 @@ This skill is designed to **replace** the originals, not run alongside them — 
 | Upstream | What it contributes | Status here |
 |----------|--------------------|-------------|
 | **Ponytail** (`DietrichGebert/ponytail`, ~93k★) | 7-rung lazy ladder, intensity levels (lite/full/ultra), `ponytail:` ceiling comments, "bug fix = root cause" | Fully incorporated — see "The Ladder" and "Intensity Levels" |
-| **andrej-karpathy-skills** (`forrestchang/andrej-karpathy-skills`, ~98k★) | Four behavioral rules: think-first, simplicity, surgical changes, goal-driven | Fully incorporated — see "Karpathy's Four Rules" |
+| **andrej-karpathy-skills** (`forrestchang/andrej-karpathy-skills`, ~98k★) | Four behavioral rules: think-first, simplicity, surgical changes, goal-driven | Fully incorporated — see "Karpathy's Four Rules" + **bundled worked examples** (verbatim-adapted from its EXAMPLES.md) |
 | **Saxena "LLM Smells" taxonomy** (field guide / research) | Fake modularity, fake complexity, hallucinated package/API names | Incorporated as the three extra rules in "Rules" below |
 
 ## When to use
@@ -59,10 +59,25 @@ The ladder is a reflex, not a research project — but it runs *after* understan
 
 ## Karpathy's Four Rules (complementary)
 
-1. **Think Before Coding.** State assumptions explicitly. If uncertain, ask. If multiple interpretations exist, surface them — do not pick silently. If a simpler approach exists, say so.
-2. **Simplicity First.** Minimum code that solves the problem. Nothing speculative. No features beyond what was asked. No abstractions for single-use code. No "flexibility"/"configurability" that was not requested. No error handling for impossible scenarios. If 200 lines could be 50, rewrite it.
-3. **Surgical Changes.** Touch only what must be touched. Do not "improve" adjacent code, comments, or formatting. Do not refactor things that are not broken. Match existing style, even if you would do it differently. Every changed line should trace directly to the user's request.
-4. **Goal-Driven Execution.** Transform tasks into verifiable goals ("Fix the bug" → "Write a test that reproduces it, then make it pass"). State a brief step-by-step plan with a verify check per step, then loop until verified.
+*Tradeoff: these bias toward caution over speed — for trivial tasks, use judgment.*
+
+1. **Think Before Coding.** State assumptions explicitly. If uncertain, ask. If something is unclear, stop and name what's confusing — don't guess. If multiple interpretations exist, surface them; don't pick silently. If a simpler approach exists, say so and push back when warranted.
+2. **Simplicity First.** Minimum code that solves the problem. Nothing speculative. No features beyond what was asked. No abstractions for single-use code. No "flexibility"/"configurability" that wasn't requested. No error handling for impossible scenarios. If 200 lines could be 50, rewrite it. Ask yourself: "Would a senior engineer call this overcomplicated?" — if yes, simplify.
+3. **Surgical Changes.** Touch only what must be touched. Do not "improve" adjacent code, comments, or formatting. Do not refactor things that aren't broken. Match existing style, even if you'd do it differently. If you notice unrelated dead code, *mention it — don't delete it*. Remove only imports/variables/functions that **your** changes orphaned; leave pre-existing dead code alone unless asked. Every changed line should trace directly to the user's request.
+4. **Goal-Driven Execution.** Transform tasks into verifiable goals ("Fix the bug" → "Write a test that reproduces it, then make it pass"). State a brief step-by-step plan, each step with a verify check, then loop until verified:
+
+   ```
+   1. [Step] → verify: [check]
+   2. [Step] → verify: [check]
+   ```
+
+### Worked examples (from Karpathy's repo, adapted)
+
+- **Simplicity — over-abstraction.** ❌ a `DiscountStrategy` ABC with `PercentageDiscount`/`FixedDiscount` subclasses, a `DiscountConfig` dataclass, and a `DiscountCalculator` (30+ lines) for one calculation. ✅ `def calculate_discount(amount, percent): return amount * (percent / 100)`. Add the machinery only when you actually get multiple discount types.
+- **Surgical — drive-by refactor.** ❌ while fixing an empty-email crash, also add username validation, docstrings, reformat quotes, restructure logic. ✅ change only the lines that fix the empty-email handling; mention the other issues, don't "fix" them.
+- **Goal-driven — test-first.** ❌ immediately rewrite sort logic for a duplicate-score bug. ✅ write a test that reproduces the non-deterministic tie order, watch it fail, then fix with a stable key, watch it pass.
+
+These before/after cases ship with the rule so the guidance is concrete, not abstract.
 
 ## Rules
 
