@@ -2,13 +2,13 @@
 
 Strip the AI smell off your code and writing, before you ship it and after.
 
-`deaify` is three Agent Skills that fix the tells in LLM-generated **code and prose**. Most humanizer projects handle text only. Ponytail and Karpathy tell the model how not to write bloat. As far as we could find, nobody takes code that *already* smells of AI and rewrites it to read like a person wrote it. That rewrite step is what `deaify` adds.
+`deaify` is three Agent Skills that fix the tells in LLM-generated **code and prose**. Most humanizer projects handle text only. Ponytail and Karpathy tell the model how not to write bloat. Nobody else takes code that *already* smells of AI and rewrites it to read like a person wrote it. That rewrite step is what `deaify` adds.
 
 ## The three skills
 
 - **`code-no-slop`** — prevention for code. A superset of Ponytail's lazy ladder and Karpathy's four rules, plus the LLM-smells taxonomy. It tells the agent to write the smallest thing that works. Ships with Karpathy's real before/after examples (over-abstraction, drive-by refactors, test-first) and a pre-delivery self-audit.
 - **`code-humanizer`** — remediation for code. It reads AI-smelling code and rewrites it, checking against 22 smells (15 general + 7 algorithm/systems specific), with before/after examples in JS/TS, Python, and Go. Before delivery it checks the smell density actually dropped.
-- **`humanize-prose`** — the writing twin. Prevention and remediation for prose, 24 tells including a technical/algorithm-writing track.
+- **`humanize-prose`** — the writing twin. Prevention and remediation for prose, 30+ tells (EN + Chinese AI-isms), including a technical/algorithm-writing track.
 
 ## Why the code-rewrite half matters
 
@@ -54,6 +54,7 @@ You don't need to install any of those apps to ship these files. They're plain t
 - [`examples/algorithm.go`](examples/algorithm.go) — Go before/after (smells #16–#22); `go run algorithm.go` prints both on the sample input.
 - [`tests/run_examples.py`](tests/run_examples.py) — behavior check: `python tests/run_examples.py`.
 - [`tests/benchmark.py`](tests/benchmark.py) — smell-density check: `python tests/benchmark.py`.
+- [`tests/test_prose.py`](tests/test_prose.py) — prose tell-density check: `python tests/test_prose.py`.
 
 ## What it is and isn't
 

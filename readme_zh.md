@@ -2,13 +2,13 @@
 
 给你的代码和文字去 AI 味——写之前防，写之后改。
 
-`deaify` 是三个 Agent Skill，专门修 LLM 生成的**代码和文字**里的 AI 痕迹。大多数 humanizer 只管文字；Ponytail 和 Karpathy 教模型"别写出臃肿代码"。据我们所能查到的，没有一个工具会拿**已经** AI 味的代码，重写得像人写的。这一步就是 `deaify` 补上的。
+`deaify` 是三个 Agent Skill，专门修 LLM 生成的**代码和文字**里的 AI 痕迹。大多数 humanizer 只管文字；Ponytail 和 Karpathy 教模型"别写出臃肿代码"。没有一个工具会拿**已经** AI 味的代码，重写得像人写的。这一步就是 `deaify` 补上的。
 
 ## 三个 skill
 
 - **`code-no-slop`** —— 代码预防。Ponytail 懒人阶梯 + Karpathy 四规则的超集，外加 LLM Smells 分类。让 Agent 只写最小能跑的东西。内置 Karpathy 真实 before/after（过度抽象、顺手重构、测试优先），含交付前自检。
 - **`code-humanizer`** —— 代码改写。读一段 AI 味的代码并重写，对照 22 条气味（15 通用 + 7 算法/系统），带 JS/TS、Python、Go 的 before/after，交付前检查气味密度确实下降了。
-- **`humanize-prose`** —— 文字孪生。文字的预防 + 改写，24 条痕迹，含技术/算法写作轨道。
+- **`humanize-prose`** —— 文字孪生。文字的预防 + 改写，30+ 条痕迹（英文 + 中文 AI 腔），含技术/算法写作轨道。
 
 ## 为什么"代码改写"这半块重要
 
@@ -54,6 +54,7 @@ cp -r deaify/skills/* ~/.claude/skills/      # Claude Code，全局
 - [`examples/algorithm.go`](examples/algorithm.go) —— Go 的 before/after（气味 #16–#22）；`go run algorithm.go` 会在示例输入上打印两份。
 - [`tests/run_examples.py`](tests/run_examples.py) —— 行为校验：`python tests/run_examples.py`。
 - [`tests/benchmark.py`](tests/benchmark.py) —— 气味密度校验：`python tests/benchmark.py`。
+- [`tests/test_prose.py`](tests/test_prose.py) —— 文字痕迹密度校验：`python tests/test_prose.py`。
 
 ## 它是什么，不是什么
 
