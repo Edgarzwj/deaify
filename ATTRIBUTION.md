@@ -11,7 +11,9 @@ them into the first *remediation-type* code humanizer with an algorithm focus.
   "bug fix = root cause". → lives in `code-no-slop`.
 - **andrej-karpathy-skills** — `forrestchang/andrej-karpathy-skills` (MIT).
   The four behavioral rules (think-first, simplicity, surgical changes,
-  goal-driven). → lives in `code-no-slop`.
+  goal-driven) **plus its real worked EXAMPLES** (over-abstraction, surgical
+  drive-by refactor, test-first) — folded verbatim-adapted into `code-no-slop`'s
+  "Karpathy's Four Rules" section.
 - **Saxena "LLM Smells" taxonomy** — field guide / research on fake modularity,
   fake complexity, and hallucinated package/API names. → three extra preventive
   rules in `code-no-slop`.

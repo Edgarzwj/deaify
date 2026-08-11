@@ -10,7 +10,7 @@
 
 It contains three skills:
 
-- **`code-no-slop`** — a *prevention* guard. Fuses Ponytail's 7-rung "lazy ladder" + Karpathy's four rules + the LLM-smells research taxonomy. Tells the agent to write the minimum that works and not over-engineer. Has a pre-delivery self-audit gate.
+- **`code-no-slop`** — a *prevention* guard. Fuses Ponytail's 7-rung "lazy ladder" + Karpathy's four rules + the LLM-smells research taxonomy. Tells the agent to write the minimum that works and not over-engineer. **Bundles Karpathy's real worked before/after examples** (over-abstraction, surgical drive-by refactor, test-first). Has a pre-delivery self-audit gate.
 - **`code-humanizer`** — a *remediation* skill. Takes code that already smells of AI and rewrites it to look human, using a 22-smell detection checklist (15 core + 7 algorithm/systems extended) with before/after examples (JS/TS + Python, plus a Go example). Has a smell-density self-check before delivery.
 - **`humanize-prose`** — the *prose* twin. Covers both prevention (write human from scratch) and remediation (rewrite AI-sounding text), with 24 AI tells including a technical/algorithm-writing dimension. This is the "speaking AI smell" half of the original ask, and the writing counterpart to `code-humanizer`.
 
@@ -90,7 +90,7 @@ testing, not a publishing requirement.
 
 ## Status / honest caveats
 
-- **v1.3.0.** Three skills (code-no-slop, code-humanizer, humanize-prose), all usable today as instructions for any LLM agent. Adds the prose skill, a runnable test harness, a Go example, and pre-delivery self-audit gates.
+- **v1.4.0.** Three skills (code-no-slop, code-humanizer, humanize-prose), all usable today as instructions for any LLM agent. `code-no-slop` now folds in Karpathy's **real worked examples** (from `forrestchang/andrej-karpathy-skills` EXAMPLES.md) so its four rules ship with concrete before/after, not just abstract bullet points.
 - Validated on algorithm + web + prose samples. The code smell list (15 core + 7 algorithm/systems extended) and the prose tell list (24) are strong starting points, not exhaustive — we expect to extend them with real-world use.
 - It is a prompt/skill, not a linter or a model. Quality depends on the underlying agent. It makes good agents better at not looking AI-generated; it will not fix fundamentally wrong logic.
 
@@ -108,7 +108,7 @@ MIT — see [`LICENSE`](LICENSE).
 
 `deaify` 是一套覆盖**代码和文字**的 Agent Skill，同时做两件事：**预防**（写码/写作时别过度工程、写得像人）和**改写**（把已有的 AI 味代码和文字都改得像人写的）。
 
-- `code-no-slop`：预防型（代码）。融合 Ponytail 的「懒人七级阶梯」+ Karpathy 四规则 + LLM Smells 研究，要求 Agent 只写最少能跑的代码；含交付前自检门禁。
+- `code-no-slop`：预防型（代码）。融合 Ponytail 的「懒人七级阶梯」+ Karpathy 四规则 + LLM Smells 研究，要求 Agent 只写最少能跑的代码；**内置 Karpathy 真实 before/after 案例**（过度抽象 / 顺手重构 / 测试优先）；含交付前自检门禁。
 - `code-humanizer`：改写型（代码）。用 22 条「AI 代码气味」清单（15 条核心 + 7 条算法/系统）检测已有代码并重写，带 JS/TS、Python 与 Go 的 before/after，**含算法方向**；含交付前气味密度自检。
 - `humanize-prose`：文字侧孪生。预防（写作时就写人话）+ 改写（重写 AI 味的文字），含 24 条 AI 文字气味，并覆盖技术/算法写作维度。这就是你最初要的「说话 AI 味」那一半，对应 `code-humanizer` 的文字版。
 
