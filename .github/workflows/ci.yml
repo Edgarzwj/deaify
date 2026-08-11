@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      # Behavior: rewritten code is behavior-identical to the source.
+      - name: behavior — run_examples
+        run: python tests/run_examples.py
+      # Effectiveness: code smell density drops (BEFORE -> AFTER) + LOC shorter.
+      - name: code smell-density — benchmark
+        run: python tests/benchmark.py
+      # Generalization: a fresh unseen sample still de-AIs cleanly.
+      - name: generalization — demo_fresh
+        run: python tests/demo_fresh.py
+      # Prose: AI tell density drops (BEFORE -> AFTER).
+      - name: prose tell-density — test_prose
+        run: python tests/test_prose.py
