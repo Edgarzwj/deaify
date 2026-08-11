@@ -2,7 +2,7 @@
 
 > Prevention **and** remediation for AI-generated code. Make LLM output read like a competent human wrote it — including algorithm and systems code.
 
-[中文说明](#中文说明)
+🇨🇳 中文文档：[readme_zh.md](readme_zh.md)
 
 ## What is this?
 
@@ -101,19 +101,3 @@ This suite stands on the shoulders of several MIT-licensed and public resources.
 ## License
 
 MIT — see [`LICENSE`](LICENSE).
-
----
-
-## 中文说明
-
-`deaify` 是一套覆盖**代码和文字**的 Agent Skill，同时做两件事：**预防**（写码/写作时别过度工程、写得像人）和**改写**（把已有的 AI 味代码和文字都改得像人写的）。
-
-- `code-no-slop`：预防型（代码）。融合 Ponytail 的「懒人七级阶梯」+ Karpathy 四规则 + LLM Smells 研究，要求 Agent 只写最少能跑的代码；**内置 Karpathy 真实 before/after 案例**（过度抽象 / 顺手重构 / 测试优先）；含交付前自检门禁。
-- `code-humanizer`：改写型（代码）。用 22 条「AI 代码气味」清单（15 条核心 + 7 条算法/系统）检测已有代码并重写，带 JS/TS、Python 与 Go 的 before/after，**含算法方向**；含交付前气味密度自检。
-- `humanize-prose`：文字侧孪生。预防（写作时就写人话）+ 改写（重写 AI 味的文字），含 24 条 AI 文字气味，并覆盖技术/算法写作维度。这就是你最初要的「说话 AI 味」那一半，对应 `code-humanizer` 的文字版。
-
-**为什么是突破**：GitHub 上 `humanizer` 类全是改文字的；Ponytail/Karpathy 是「写码前防过度工程」的预防型；而「把已有 AI 代码重写成人味」的**改写型 skill 之前没有**。我们补上了这个空缺，并且专门覆盖算法代码（重造标准库、未命名魔法常量、逐行废话注释、单算法过度抽象成类、防御性 deepcopy、空 `except` 返回 -1），现在又把文字侧也补齐——如果帮不到算法场景，那它就不算好，这是我们的底线。
-
-用法、安装、示例见上文。
-
-**多代理适配**：除了 `skills/`，本仓库还附带可移植适配器——`AGENTS.md`、`.cursor/rules/deaify.mdc`、`.qoder/rules/deaify.md`、`.windsurf/rules/deaify.md`、`.claude/CLAUDE.md`，把同一套规则喂给 Cursor / Qoder / Windsurf / OpenCode / Claude Code 等「读项目规则文件」的 Agent。**写这些文件不需要下载任何 App**，它们就是纯文本，App 打开项目时自动读取；下载 App 只是为了在 App 内实测规则是否被读到，可选。
