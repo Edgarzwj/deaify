@@ -86,6 +86,7 @@ testing, not a publishing requirement.
 - [`examples/web.ts`](examples/web.ts) — TS/JS before/after.
 - [`examples/algorithm.go`](examples/algorithm.go) — Go before/after for #16–#22 (`go run algorithm.go` prints both agreeing on the sample input).
 - [`tests/run_examples.py`](tests/run_examples.py) — behavior-preservation harness; run `python tests/run_examples.py`.
+- [`tests/benchmark.py`](tests/benchmark.py) — smell-density benchmark; run `python tests/benchmark.py` to measure how much AI smell a humanized rewrite removes (BEFORE → AFTER signal count).
 
 ## Status / honest caveats
 
