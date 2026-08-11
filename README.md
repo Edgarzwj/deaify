@@ -1,103 +1,68 @@
-# deaify — Remove AI smell from your code
+# deaify
 
-> Prevention **and** remediation for AI-generated code. Make LLM output read like a competent human wrote it — including algorithm and systems code.
+Strip the AI smell off your code and writing, before you ship it and after.
 
-🇨🇳 中文文档：[readme_zh.md](readme_zh.md)
+`deaify` is three Agent Skills that fix the tells in LLM-generated **code and prose**. Most humanizer projects handle text only. Ponytail and Karpathy tell the model how not to write bloat. As far as we could find, nobody takes code that *already* smells of AI and rewrites it to read like a person wrote it. That rewrite step is what `deaify` adds.
 
-## What is this?
+## The three skills
 
-`deaify` is a small suite of three Agent Skills that fight the tell-tale signs of AI-generated **code and prose**. Most "humanizer" projects target text only; Ponytail/Karpathy target code-writing only. `deaify` covers both directions — **prevention** (write lean / write human) and **remediation** (rewrite existing AI-smelling code *and* prose) — and is, as far as we can tell, the only packaged skill that does **remediation on code**.
+- **`code-no-slop`** — prevention for code. A superset of Ponytail's lazy ladder and Karpathy's four rules, plus the LLM-smells taxonomy. It tells the agent to write the smallest thing that works. Ships with Karpathy's real before/after examples (over-abstraction, drive-by refactors, test-first) and a pre-delivery self-audit.
+- **`code-humanizer`** — remediation for code. It reads AI-smelling code and rewrites it, checking against 22 smells (15 general + 7 algorithm/systems specific), with before/after examples in JS/TS, Python, and Go. Before delivery it checks the smell density actually dropped.
+- **`humanize-prose`** — the writing twin. Prevention and remediation for prose, 24 tells including a technical/algorithm-writing track.
 
-It contains three skills:
+## Why the code-rewrite half matters
 
-- **`code-no-slop`** — a *prevention* guard. Fuses Ponytail's 7-rung "lazy ladder" + Karpathy's four rules + the LLM-smells research taxonomy. Tells the agent to write the minimum that works and not over-engineer. **Bundles Karpathy's real worked before/after examples** (over-abstraction, surgical drive-by refactor, test-first). Has a pre-delivery self-audit gate.
-- **`code-humanizer`** — a *remediation* skill. Takes code that already smells of AI and rewrites it to look human, using a 22-smell detection checklist (15 core + 7 algorithm/systems extended) with before/after examples (JS/TS + Python, plus a Go example). Has a smell-density self-check before delivery.
-- **`humanize-prose`** — the *prose* twin. Covers both prevention (write human from scratch) and remediation (rewrite AI-sounding text), with 24 AI tells including a technical/algorithm-writing dimension. This is the "speaking AI smell" half of the original ask, and the writing counterpart to `code-humanizer`.
+The interesting part is `code-humanizer`. Prevention tools (Ponytail, Karpathy) stop the model from *writing* bloat. They can't fix the 800-line file that already shipped. `deaify` does. And it's built for algorithm code first: reinvented stdlib calls (`pow`, `gcd`, `bisect`), unnamed magic constants (`1e9+7`, `eps`), line-by-line narration comments, one algorithm wrapped in a class, defensive `deepcopy`, `except: return -1`. A skill that doesn't help algorithm code isn't worth shipping. That's the bar.
 
-## Why this exists (the gap on GitHub)
-
-We surveyed GitHub. The landscape:
-
-- **Text humanizers (abundant):** `blader/humanizer` (33 patterns, ~23k★), the Chinese port `op7418/Humanizer`, `kakawaa/humanizer`, `Aboudjem/humanizer-skill`, etc. All rewrite *prose*.
-- **Code prevention (a few):** `DietrichGebert/ponytail` (~93k★, anti-over-engineering), `forrestchang/andrej-karpathy-skills` (~98k★, four rules), `caveman` (terse prose). These stop the agent from *writing* bloat.
-- **Code remediation (none we found):** no packaged skill takes *existing* AI-generated code and rewrites it to look human. "AI code smells" exist only as blog checklists (`vibecodedetector`, LLM-smells field guides), not as an actionable, rewritable skill.
-
-### Our breakthrough / advantages
-
-1. **First rewrite-type code humanizer.** Distinct from the dominant prevention-only tools. Prevention stops bloat; remediation cleans up what already shipped.
-2. **Algorithm & systems-code focus.** Most AI-code discussion is web/CRUD-flavored. We explicitly cover algorithm tells: reinventing the stdlib (`pow`/`gcd`/`unique`/bisect), unnamed magic constants (`1e9+7`, `eps`), step-by-step narration comments, over-abstracting one algorithm into a class, defensive `deepcopy`, vacuous `except: return -1`. *If it doesn't help algorithm code, it isn't good enough* — that's our bar.
-3. **Dual-layer, one coherent philosophy.** Prevention (`code-no-slop`, a superset of Ponytail + Karpathy + Saxena) and remediation (`code-humanizer`) cross-reference each other.
-4. **Verification discipline.** `code-humanizer` mandates that rewrites be executed/verified behavior-preserving before delivery — a concrete quality gate most skills lack. A runnable `tests/run_examples.py` proves it: it executes `examples/algorithm.py` and re-checks before/after pairs for identical output.
-5. **Now covers prose too.** `humanize-prose` closes the original "speaking AI smell" half — prevention + remediation for writing, including technical/algorithm explanations. Pairs with the code skills the way Ponytail pairs with `caveman`.
-6. **Honest scope.** We target readability/humanness, **not** adversarial AI-detector evasion. We say so.
+`code-humanizer` also refuses to hand you rewritten code it hasn't verified. It runs the before/after and checks the output is identical (`tests/run_examples.py` does this on the bundled examples). Most skills skip that step.
 
 ## Install
 
-Works with any Agent Skills runtime that scans a `skills/` directory — WorkBuddy, Claude Code, OpenCode, Cursor, Cline, and friends.
+Works anywhere an Agent Skills runtime scans a `skills/` directory: WorkBuddy, Claude Code, OpenCode, Cursor, Cline.
 
 ```bash
 git clone https://github.com/Edgarzwj/deaify.git
-
-# WorkBuddy (global, all projects):
-cp -r deaify/skills/* ~/.workbuddy/skills/
-
-# Claude Code (global):
-cp -r deaify/skills/* ~/.claude/skills/
-
-# Project-scoped (travels with your repo): copy the two skill folders
-# into your project's skills directory.
+cp -r deaify/skills/* ~/.workbuddy/skills/   # WorkBuddy, global
+cp -r deaify/skills/* ~/.claude/skills/      # Claude Code, global
 ```
 
-> Note: `code-no-slop` already includes Ponytail + Karpathy. **Do not** also install those separately — it would double-inject the same guidance.
+`code-no-slop` already contains Ponytail and Karpathy. Don't install those separately, or you inject the same guidance twice.
 
-## Portability — multi-agent adapters
+## Multi-agent adapters
 
-`deaify` runs wherever an Agent Skills runtime scans `skills/` (WorkBuddy,
-Claude Code, OpenCode, Cursor, Cline, …). For tools that instead read **project
-rule files**, this repo also ships portable adapters generated from the same
-source as the skills — so the rules work even without a skills runtime:
+Some tools read project rule files instead of a `skills/` directory. This repo ships adapters generated from the same source, so the rules work there too:
 
 | File | Read by |
 |------|---------|
-| `AGENTS.md` | Claude Code, Codex, Gemini, OpenCode, Devin, and any AGENTS.md-aware agent |
+| `AGENTS.md` | Claude Code, Codex, Gemini, OpenCode, Devin |
 | `.cursor/rules/deaify.mdc` | Cursor |
 | `.qoder/rules/deaify.md` | Qoder |
 | `.windsurf/rules/deaify.md` | Windsurf |
-| `.claude/CLAUDE.md` | Claude Code (project-scoped) |
+| `.claude/CLAUDE.md` | Claude Code (project) |
 
-**You do NOT need to download any of those apps to author or ship these files** —
-they are plain text/config that the tools read when they open your project. Just
-copy the repo (or the relevant adapter file) into your project. To actually
-*verify in-app* that a tool picks the rules up, you'd install the app
-(e.g. `npm i -g opencode` for OpenCode, or download Qoder) — that's optional
-testing, not a publishing requirement.
-
-> Note: the adapters are a generated copy of `skills/*/SKILL.md`. If you edit a
-> skill, regenerate the adapters so they stay in sync.
+You don't need to install any of those apps to ship these files. They're plain text the tool reads when it opens your project. The adapters are copies of the skill files, so regenerate them after editing a skill.
 
 ## Usage
 
-- **Prevention:** keep `code-no-slop` active, or tell the agent "be lazy / simplest solution / yagni". It enforces the lazy ladder on every coding task. Intensity: `code-no-slop lite|full|ultra`.
-- **Remediation:** paste AI-generated code and say "humanize this code / remove the AI smell / de-AI this". It returns rewritten code plus a changes list mapping each edit to a smell number.
+- Prevention: keep `code-no-slop` on, or tell the agent "be lazy / simplest solution / yagni".
+- Remediation: paste AI-generated code and say "humanize this / remove the AI smell". You get rewritten code plus a list mapping each edit to a smell number.
 
 ## Examples
 
-- [`examples/algorithm.py`](examples/algorithm.py) — verified: before/after produce identical outputs.
-- [`examples/web.ts`](examples/web.ts) — TS/JS before/after.
-- [`examples/algorithm.go`](examples/algorithm.go) — Go before/after for #16–#22 (`go run algorithm.go` prints both agreeing on the sample input).
-- [`tests/run_examples.py`](tests/run_examples.py) — behavior-preservation harness; run `python tests/run_examples.py`.
-- [`tests/benchmark.py`](tests/benchmark.py) — smell-density benchmark; run `python tests/benchmark.py` to measure how much AI smell a humanized rewrite removes (BEFORE → AFTER signal count).
+- [`examples/algorithm.py`](examples/algorithm.py) — before/after produce identical output.
+- [`examples/web.ts`](examples/web.ts) — TypeScript/JS before/after.
+- [`examples/algorithm.go`](examples/algorithm.go) — Go before/after (smells #16–#22); `go run algorithm.go` prints both on the sample input.
+- [`tests/run_examples.py`](tests/run_examples.py) — behavior check: `python tests/run_examples.py`.
+- [`tests/benchmark.py`](tests/benchmark.py) — smell-density check: `python tests/benchmark.py`.
 
-## Status / honest caveats
+## What it is and isn't
 
-- **v1.4.0.** Three skills (code-no-slop, code-humanizer, humanize-prose), all usable today as instructions for any LLM agent. `code-no-slop` now folds in Karpathy's **real worked examples** (from `forrestchang/andrej-karpathy-skills` EXAMPLES.md) so its four rules ship with concrete before/after, not just abstract bullet points.
-- Validated on algorithm + web + prose samples. The code smell list (15 core + 7 algorithm/systems extended) and the prose tell list (24) are strong starting points, not exhaustive — we expect to extend them with real-world use.
-- It is a prompt/skill, not a linter or a model. Quality depends on the underlying agent. It makes good agents better at not looking AI-generated; it will not fix fundamentally wrong logic.
+v1.4.0. Three skills, usable today as instructions for any LLM agent.
 
-## Attribution
+It makes a good agent less likely to write something that reads as generated. It won't fix logic that was wrong to begin with, and it is not a tool for beating AI detectors. We're after readable, human code, not undetectability.
 
-This suite stands on the shoulders of several MIT-licensed and public resources. See [`ATTRIBUTION.md`](ATTRIBUTION.md).
+## Attribution & license
 
-## License
+Built on MIT-licensed and public work. See [ATTRIBUTION.md](ATTRIBUTION.md). MIT — see [LICENSE](LICENSE).
 
-MIT — see [`LICENSE`](LICENSE).
+🇨🇳 [中文文档](readme_zh.md)
