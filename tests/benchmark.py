@@ -1,30 +1,36 @@
 #!/usr/bin/env python3
-"""Smell-density benchmark for deaify (code-humanizer).
+"""Smell-density + conciseness benchmark for deaify (code-humanizer).
 
-Measures the skill's *effectiveness*, not just correctness: given an
-AI-sounding BEFORE sample and its humanized AFTER, how many AI-smell
-signals remain? A good remediation skill should drive this number down.
+Measures *effectiveness*, not just correctness: given an AI-sounding BEFORE
+sample and its humanized AFTER, how many AI-smell signals remain, and how many
+lines did the rewrite shed? A good remediation skill drives both numbers down.
 
-This is a lightweight, regex/string-based detector — good enough to track
-trend over versions, not a substitute for a real linter or human review.
+Cross-language (Python / TypeScript / Go). The detectors are lightweight
+regex/string checks — fine for tracking trend across versions, not a substitute
+for a real linter or human review.
 """
 
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SAMPLE = ROOT / "examples" / "algorithm.py"
+
+SAMPLES = [
+    ("Python", "py", ROOT / "examples" / "algorithm.py"),
+    ("TypeScript", "ts", ROOT / "examples" / "web.ts"),
+    ("Go", "go", ROOT / "examples" / "algorithm.go"),
+]
 
 
 def extract_blocks(text):
-    lines = text.splitlines()
     before, after, mode = [], [], None
-    for ln in lines:
+    for ln in text.splitlines():
         if "BEFORE (AI-sounding)" in ln:
             mode = "before"
         elif "AFTER (humanized)" in ln:
             mode = "after"
-        elif "VERIFY" in ln:
+        elif "VERIFY" in ln or "func main" in ln or "__name__" in ln:
+            # stop the AFTER block before test/main scaffolding leaks in
             mode = None
         elif mode == "before":
             before.append(ln)
@@ -36,32 +42,36 @@ def extract_blocks(text):
 # --- detectors: each returns an int count of smell signals in `code` ---
 
 def d_reinvented_stdlib(code):
-    # hand-rolled pow loop: `result = result * base` inside a for
+    # hand-rolled pow loop: `result = result * base`
     return len(re.findall(r"result\s*=\s*result\s*\*\s*base", code))
 
 def d_unnamed_magic_const(code):
-    # the bare MOD number without digit separators
-    return len(re.findall(r"\b1000000007\b", code))
+    # bare MOD / ms constants without digit separators or a name
+    return len(re.findall(r"\b1000000007\b|\b86400000\b", code))
 
 def d_narration_comment(code):
-    pats = [r"iterate", r"increment", r"this function", r"calculates", r"removes duplicate"]
+    pats = [r"iterate", r"increment", r"this function", r"calculates",
+            r"removes duplicate", r"fetches the user"]
     cnt = 0
     for ln in code.splitlines():
         if "#" in ln:
-            comment = ln.split("#", 1)[1]  # only the comment portion
-            cnt += sum(1 for p in pats if re.search(p, comment, re.I))
+            comment = ln.split("#", 1)[1]
+        elif "//" in ln:
+            comment = ln.split("//", 1)[1]
+        else:
+            continue
+        cnt += sum(1 for p in pats if re.search(p, comment, re.I))
     return cnt
 
 def d_generic_names(code):
-    # whole-word generic identifiers that carry no meaning
     return len(re.findall(r"\b(arr|ans|tmp|data|result)\b", code))
 
 def d_single_method_class(code):
-    # a class whose only real method is a thin wrapper (over-abstraction)
     return len(re.findall(r"class\s+\w+.*?def sort_data", code, re.S))
 
 def d_vacuous_except(code):
-    return len(re.findall(r'except\s+Exception.*?print\("An error occurred"\)', code, re.S))
+    # identical boilerplate message in both Python and TS samples
+    return len(re.findall(r"An error occurred", code))
 
 
 DETECTORS = {
@@ -78,26 +88,45 @@ def score(code):
     return {name: det(code) for name, det in DETECTORS.items()}
 
 
+def loc(code, lang):
+    """Count code lines: drop blanks and pure-comment lines."""
+    n = 0
+    for ln in code.splitlines():
+        s = ln.strip()
+        if not s:
+            continue
+        if lang == "py" and s.startswith("#"):
+            continue
+        if lang in ("ts", "go") and s.startswith("//"):
+            continue
+        n += 1
+    return n
+
+
 def main():
-    before, after = extract_blocks(SAMPLE.read_text(encoding="utf-8"))
-    sb, sa = score(before), score(after)
+    print("deaify smell-density + conciseness benchmark\n")
+    tot_b = tot_a = loc_b = loc_a = 0
 
-    print("deaify smell-density benchmark (examples/algorithm.py)\n")
-    print(f"{'smell':28} {'BEFORE':>8} {'AFTER':>8} {'Δ':>6}")
-    print("-" * 52)
-    tot_b = tot_a = 0
-    for name in DETECTORS:
-        b, a = sb[name], sa[name]
-        tot_b += b
-        tot_a += a
-        arrow = "↓" if a < b else ("=" if a == b else "↑")
-        print(f"{name:28} {b:>8} {a:>8} {arrow:>6}")
-    print("-" * 52)
-    print(f"{'TOTAL':28} {tot_b:>8} {tot_a:>8}")
+    for name, lang, path in SAMPLES:
+        before, after = extract_blocks(path.read_text(encoding="utf-8"))
+        sb, sa = score(before), score(after)
+        lb, la = loc(before, lang), loc(after, lang)
+        tb, ta = sum(sb.values()), sum(sa.values())
+        tot_b += tb; tot_a += ta; loc_b += lb; loc_a += la
 
-    reduction = (1 - tot_a / tot_b) * 100 if tot_b else 0.0
-    print(f"\nSmell-density reduction: {reduction:.0f}%  ({tot_b} → {tot_a} signals)")
-    verdict = "EFFECTIVE" if reduction >= 70 else ("PARTIAL" if reduction >= 30 else "WEAK")
+        red = (1 - ta / tb) * 100 if tb else 0.0
+        lred = (1 - la / lb) * 100 if lb else 0.0
+        verdict = "EFFECTIVE" if red >= 70 else ("PARTIAL" if red >= 30 else "WEAK")
+        print(f"== {name} ({path.name}) ==")
+        print(f"  smell signals : {tb:>3} -> {ta:<3}  ({red:>5.0f}% reduction)  [{verdict}]")
+        print(f"  code lines    : {lb:>3} -> {la:<3}  ({lred:>5.0f}% shorter)")
+
+    print()
+    sred = (1 - tot_a / tot_b) * 100 if tot_b else 0.0
+    lred = (1 - loc_a / loc_b) * 100 if loc_b else 0.0
+    print(f"TOTAL smell signals : {tot_b} -> {tot_a}  ({sred:.0f}% reduction)")
+    print(f"TOTAL code lines    : {loc_b} -> {loc_a}  ({lred:.0f}% shorter)")
+    verdict = "GENERALIZES" if sred >= 70 and lred > 0 else "CHECK"
     print(f"Verdict: {verdict}")
 
 
