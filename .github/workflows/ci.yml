@@ -25,3 +25,12 @@ jobs:
       # Prose: AI tell density drops (BEFORE -> AFTER).
       - name: prose tell-density — test_prose
         run: python tests/test_prose.py
+      # Structural smells via real AST (Python ast/tokenize), not regex.
+      - name: AST smell — test_ast
+        run: python tests/test_ast.py
+      # Multi-language regression: py/ts/go corpus before/after (gap #8).
+      - name: corpus regression — test_corpus
+        run: python tests/test_corpus.py
+      # Third-party endorsement harness (skips without an API key).
+      - name: third-party detector — third_party_detector
+        run: python tests/third_party_detector.py
