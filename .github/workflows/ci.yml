@@ -34,3 +34,7 @@ jobs:
       # Third-party endorsement harness (skips without an API key).
       - name: third-party detector — third_party_detector
         run: python tests/third_party_detector.py
+      # End-to-end: an agent follows code-humanizer on an UNSEEN snippet,
+      # output must be smell-free (AST) and behavior-preserving (gap #4).
+      - name: agent end-to-end — test_e2e_agent
+        run: python tests/test_e2e_agent.py

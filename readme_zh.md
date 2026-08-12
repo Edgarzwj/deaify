@@ -55,6 +55,8 @@ cp -r deaify/skills/* ~/.claude/skills/      # Claude Code，全局
 - [`tests/run_examples.py`](tests/run_examples.py) —— 行为校验：`python tests/run_examples.py`。
 - [`tests/benchmark.py`](tests/benchmark.py) —— 气味密度校验：`python tests/benchmark.py`。
 - [`tests/test_prose.py`](tests/test_prose.py) —— 文字痕迹密度校验：`python tests/test_prose.py`。
+- [`tests/test_e2e_agent.py`](tests/test_e2e_agent.py) —— Agent 端到端：让 Agent 按 `code-humanizer` 改写一段没见过的代码，结果必须零气味（AST 检测）且行为一致。运行：`python tests/test_e2e_agent.py`。
+- [`examples/e2e/`](examples/e2e) —— Agent 端到端测试用的「未见过」before/after 样本。
 
 ## 它是什么，不是什么
 

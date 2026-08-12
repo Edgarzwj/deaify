@@ -55,6 +55,8 @@ You don't need to install any of those apps to ship these files. They're plain t
 - [`tests/run_examples.py`](tests/run_examples.py) — behavior check: `python tests/run_examples.py`.
 - [`tests/benchmark.py`](tests/benchmark.py) — smell-density check: `python tests/benchmark.py`.
 - [`tests/test_prose.py`](tests/test_prose.py) — prose tell-density check: `python tests/test_prose.py`.
+- [`tests/test_e2e_agent.py`](tests/test_e2e_agent.py) — agent end-to-end: an agent follows `code-humanizer` on an unseen snippet; output must be smell-free (AST) and behavior-preserving. `python tests/test_e2e_agent.py`.
+- [`examples/e2e/`](examples/e2e) — the unseen before/after pair used by the agent end-to-end test.
 
 ## What it is and isn't
 
