@@ -118,6 +118,12 @@ These come from Wikipedia's *Signs of AI writing* and close the gap with the
 34. **Significance inflation / promotional language** — "a pivotal moment",
     "breathtaking region", "plays a crucial role." State the plain fact; name a real
     source or cut the claim.
+35. **Parenthetical asides** — shoving an explanation into parentheses
+    ("caching helps (which is to say, it avoids recomputing the same value)") instead
+    of just stating it. Humans fold the point into the sentence or put it right after:
+    "caching avoids recomputing the same value." A parenthesis reads as "I couldn't
+    decide where this belongs," which is the AI tell. Unpack the aside into the main
+    clause; keep parentheses only for a true skip-able aside (a citation, a date).
 
 ## Chinese AI-isms (中文 AI 腔)
 
@@ -134,6 +140,7 @@ Chinese output has its own tells. Cut these:
 - **不言而喻 / 毫无疑问 / 毋庸置疑** — just say it; don't vouch for the obvious.
 - **为…奠定了坚实基础 / 开启了…新篇章 / 注入了新的活力** — promotional; say what
   actually happened.
+- **括号解释** —— 用括号塞补充说明（"这一点很重要（也就是说，X）"）。正常人把解释直接接在后面说，不塞进括号。把括号里的内容展开成一句话，或放在句后补充。
 
 Before: "值得注意的是，随着人工智能的发展，这一技术发挥着至关重要的作用，不容忽视。"
 After: "This technique matters, and the hype around it doesn't."
@@ -147,7 +154,8 @@ Checklist:
 1. Could any sentence have been emitted by any model with no knowledge of the topic?
    If yes, cut or rewrite it with something specific.
 2. Any leftover tell from the lists above — em-dash between clauses, "delve",
-   "It is worth noting", a forced three-item list, a hedge opener, a Chinese AI-ism?
+   "It is worth noting", a forced three-item list, a hedge opener, a parenthetical
+   aside (#35), a Chinese AI-ism?
 3. Did I add anything not in the source? (See fact-preservation below.) If yes, remove
    it — that's not humanizing, that's inventing.
 4. Is the voice right for the context? (See voice-by-context.) A neutral doc that I
@@ -265,6 +273,17 @@ After (humanized):
 
 Changes: #30 removed the "Hope this helps!" closer; Chinese-isms cut "值得注意的是",
 "随着…的发展", "发挥着至关重要的作用", "不容忽视".
+
+### Tell #35 (parenthetical aside)
+
+Before (AI-sounding):
+> Caching helps (which is to say, it avoids recomputing the same value), and (as a
+> bonus) it also cuts memory use.
+
+After (humanized):
+> Caching avoids recomputing the same value and cuts memory use.
+
+Changes: #35 unpacked both parenthetical asides into the main clause; no information lost.
 
 ## Pairing
 
