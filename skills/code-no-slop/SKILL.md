@@ -101,7 +101,7 @@ The ladder and rules above apply to every task. Algorithm, competitive-programmi
 
 - **Use the math stdlib, not a reimplementation.** `base ** exp` over a hand-rolled `pow` loop; `math.gcd` over a Euclidean loop; `math.comb` over factorial division; `bisect` over a hand-written binary search; `heapq` / `itertools` over bespoke structures. A correct built-in beats a clever loop you debug at 3am.
 - **Name every magic constant.** `MOD = 1_000_000_007` (not `1000000007`), `EPS = 1e-9`, `INF = 10**18`. Use digit separators and a name — the next reader should not reverse-engineer `1e9+7`.
-- **No narration comments.** `# increment i` above `i += 1`, or a comment that restates the next line, is slop. The code is the comment; delete the narration.
+- **No narration comments.** `# increment i` above `i += 1`, or a comment that restates the next line, is slop. The code is the comment; delete the narration. Especially kill the fake header comment at the very top of a function that just announces what it does — a real comment explains *why* and sits next to the line it explains, not above the whole block.
 - **Don't class-ify one algorithm.** A `SortStrategy` / `MathUtility` with a single method that just calls `sorted` is fake modularity (see above). A free function is the lazy shape.
 - **Don't over-copy.** `copy.deepcopy` on every mutation when a shallow copy or none suffices is defensive padding. Copy only what you actually mutate.
 
