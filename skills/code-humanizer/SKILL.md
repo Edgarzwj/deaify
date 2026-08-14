@@ -3,7 +3,7 @@ name: code-humanizer
 description: "Rewrite AI-flavored code to read like it was written by a competent human, including algorithm and systems code. Use when given existing code that looks machine-generated — over-commented, generically named, over-defensive, over-abstracted, or uniformly structured — and asked to 'humanize', 'de-AI', 'make this less AI-generated', or 'remove the AI smell' from code. Detects 23 AI code smells (15 core + 7 algorithm/systems extended + 1 fake-header-comment) and rewrites them with verified before/after examples across JS/TS and Python."
 description_zh: "去除代码的 AI 味：把 AI 生成的代码改得像人写的（含算法/系统代码）"
 description_en: "Remove AI smell from code"
-version: 1.3.0
+version: 1.0.0
 agent_created: true
 allowed-tools:
   - Read
