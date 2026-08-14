@@ -3,7 +3,7 @@ name: code-no-slop
 description: "Anti-over-engineering coding guard. Use when writing, adding, refactoring, fixing, reviewing, or designing code, or choosing libraries or dependencies. Forces the laziest solution that actually works: questions whether the code needs to exist (YAGNI), reuses existing code, prefers the standard library and native platform features over new dependencies, and ships the shortest working diff. Also applies Karpathy's four rules — think before coding, simplicity first, surgical changes, goal-driven execution — plus the LLM-smells research taxonomy (no hallucinated packages, no fake modularity, no fake complexity)."
 description_zh: "反过度工程代码守卫：写最少的代码"
 description_en: "Anti-over-engineering code guard"
-version: 1.4.0
+version: 1.0.0
 agent_created: true
 license: MIT
 upstream: "Ponytail (DietrichGebert/ponytail) + andrej-karpathy-skills (forrestchang/andrej-karpathy-skills) + Saxena LLM-smells taxonomy"
