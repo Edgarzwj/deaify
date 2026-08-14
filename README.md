@@ -60,7 +60,7 @@ You don't need to install any of those apps to ship these files. They're plain t
 
 ## What it is and isn't
 
-v1.4.0. Three skills, usable today as instructions for any LLM agent.
+v1.0.0. Three skills, usable today as instructions for any LLM agent.
 
 It makes a good agent less likely to write something that reads as generated. It won't fix logic that was wrong to begin with, and it is not a tool for beating AI detectors. We're after readable, human code, not undetectability.
 
