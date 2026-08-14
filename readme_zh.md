@@ -60,7 +60,7 @@ cp -r deaify/skills/* ~/.claude/skills/      # Claude Code，全局
 
 ## 它是什么，不是什么
 
-v1.4.0。三个 skill，现在就能当任意 LLM Agent 的指令用。
+v1.0.0。三个 skill，现在就能当任意 LLM Agent 的指令用。
 
 它让好 Agent 更不容易写出"读起来像生成"的东西。它修不了本来逻辑就错的部分，也不是用来绕过 AI 检测器的。我们要的是可读、像人的代码——不是"检测不出来"。
 
