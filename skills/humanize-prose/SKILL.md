@@ -3,7 +3,7 @@ name: humanize-prose
 description: "Make AI-sounding writing read like a competent human wrote it — for both prevention (writing from scratch) and remediation (rewriting existing text). Use when drafting or cleaning up prose, docs, explanations, emails, or technical/algorithm write-ups that smell of AI: hedged openers, 'delve'/'tapestry'/'navigate the landscape', three-part listicle uniformity, thesis-restating intros, brochure tone, no real opinion. Covers 30+ AI tells (EN + Chinese AI-isms), a final 'obviously AI' self-critique pass, a no-fabrication fact-preservation rule, and voice-by-context guidance."
 description_zh: "去除文字/说话的 AI 味：写作时预防 + 成文后改写（含技术/算法写作 + 中文 AI 腔 + 自我批判终遍 + 事实保全）"
 description_en: "Remove AI smell from prose"
-version: 1.4.0
+version: 1.0.0
 agent_created: true
 allowed-tools:
   - Read
